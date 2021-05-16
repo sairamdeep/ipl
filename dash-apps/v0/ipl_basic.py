@@ -65,7 +65,7 @@ app.title = "IPL DashBoard"
 
 dropdown =  dbc.FormGroup(
         [
-            dbc.Label("Team", html_for="dropdown"),
+            dbc.Label("Select Team", html_for="dropdown",style={"margin-top": "10px"}),
             dcc.Dropdown(
                 id="team-filter",
                 options=[
@@ -85,7 +85,7 @@ form = dbc.Card(
                 dbc.Col(dbc.Form([dropdown]),md=6 )
             ]
         )
-    ]
+    ],style={"margin-top": "15px"}
 )
 
 
@@ -97,21 +97,21 @@ table = dbc.Card(
         [
             dbc.Col(html.Div("Total Matches Played :"),md=8),
             dbc.Col(html.Div(id='total-matches'),md=2)
-        ],style={'marginLeft':'10 px'}
+        ],style={"margin-top": "4px","margin-left": "5px"}
     ),
     html.Hr(),
     dbc.Row(
         [
             dbc.Col(html.Div("Total Matches Won :"),md=8),
             dbc.Col(html.Div(id='total-won'),md=2)
-        ]
+        ],style={"margin-left": "5px"}
     ),
     html.Hr(),
     dbc.Row(
         [
             dbc.Col(html.Div("Winning % : "),md=8),
             dbc.Col(html.Div(id='winning-percent'),md=2)
-        ]
+        ],style={"margin-left": "5px","margin-bottom": "5px"}
     )
     ]
 )
@@ -135,9 +135,9 @@ tab1_content= dbc.Card(
         html.Hr(),
         dbc.Row(
             [
-                dbc.Col(dcc.Graph(id="team-matches"), md=4),
-                dbc.Col(dcc.Graph(id="team-wins"), md=4),
-                dbc.Col(dcc.Graph(id="team-wins-percent"), md=4)
+                dbc.Col(dbc.Card(dcc.Graph(id="team-matches")), md=4),
+                dbc.Col(dbc.Card(dcc.Graph(id="team-wins")), md=4),
+                dbc.Col(dbc.Card(dcc.Graph(id="team-wins-percent")), md=4)
             ],
             align="center",
         ),
@@ -145,9 +145,9 @@ tab1_content= dbc.Card(
         html.Hr(),
         dbc.Row(
             [
-                dbc.Col(dcc.Graph(id="team-matches-twise"), md=4),
-                dbc.Col(dcc.Graph(id="team-won-twise"), md=4),
-                dbc.Col(dcc.Graph(id="team-win-percent-twise"), md=4)
+                dbc.Col(dbc.Card(dcc.Graph(id="team-matches-twise")), md=4),
+                dbc.Col(dbc.Card(dcc.Graph(id="team-won-twise")), md=4),
+                dbc.Col(dbc.Card(dcc.Graph(id="team-win-percent-twise")), md=4)
             ],
             align="center",
         )
@@ -157,8 +157,17 @@ tab1_content= dbc.Card(
 tab2_content = dbc.Card(
     dbc.CardBody(
         [
-            html.P("This is tab 2!", className="card-text"),
-            dbc.Button("Don't click here", color="danger"),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [
+                        html.P("In progress...🚧", className="card-text"),
+                        dbc.Progress(value=50, striped=True)
+                    ],md=6    
+                    )
+                ],
+                justify='center'
+            )
         ]
     ),
     className="mt-3",
@@ -168,13 +177,13 @@ tabs = dbc.Tabs(
         dbc.Tab(tab1_content, label="Team Performance"),
         dbc.Tab(tab2_content, label="Player Performance"),
         dbc.Tab(
-            "This tab's content is never seen", label="Tab 3", disabled=True
+            "This tab's content is never seen", label="Analytics", disabled=True
         ),
     ]
 )
 app.layout = dbc.Container(
     [
-        html.H1("IPL Analytics 🏆"),
+        dbc.Row(html.H1("IPL Analytics 🏆"),justify='center',style={'margin-top':'10px'}),
         html.Hr(),
         tabs
     ],
@@ -213,10 +222,15 @@ def team_matches_year(team):
     a=a.reset_index().rename(columns={0:'matches_played'})
     fig = px.bar(a, x='year', y='matches_played',title=f'Matches Played by {team}')
     #fig.update_traces(texttemplate='%{text:.2s}', textposition='outside')
-    fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
+    #fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
     #fig.set_title(f'Matches Played by {team} yearly')
+    fig.update_layout(
+    autosize=False,
+    width=400,
+    height=300,
+    )
     return fig
-
+ 
 
 @app.callback(
     Output("team-wins", "figure"),
@@ -228,7 +242,11 @@ def team_matches_won(team):
     a=a.reset_index().rename(columns={0:'matches_won'})
     fig = px.bar(a, x='year', y='matches_won',title=f'Matches Won by {team}')
     fig.update_layout(uniformtext_minsize=8, uniformtext_mode='hide')
-
+    fig.update_layout(
+    autosize=False,
+    width=400,
+    height=300,
+    )
     return fig
 
 @app.callback(
@@ -242,7 +260,11 @@ def team_wins_percent(team):
     a=pd.DataFrame(c)
     a=a.reset_index().rename(columns={0:'win%'})
     fig = px.bar(a, x='year', y='win%',title=f'% Won by {team}')
-    
+    fig.update_layout(
+    autosize=False,
+    width=400,
+    height=300,
+    )
     return fig
 @app.callback(
     Output("team-matches-twise", "figure"),
@@ -265,6 +287,7 @@ def matches_team_wise(team):
         pad=4
         )
     )
+    fig.update_yaxes(tickfont_size=10, ticks="outside",tickwidth=2)
     return fig
 
 @app.callback(
@@ -288,6 +311,7 @@ def wins_team_wise(team):
         pad=4
         )
     )
+    fig.update_yaxes(tickfont_size=10, ticks="outside",tickwidth=2)
     return fig
 
 @app.callback(
@@ -315,6 +339,7 @@ def win_percent_team_wise(team):
         pad=4
         )
     )
+    fig.update_yaxes(tickfont_size=10, ticks="outside",tickwidth=2)
     return fig
 
 if __name__ == "__main__":
