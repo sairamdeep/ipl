@@ -116,10 +116,8 @@ table = dbc.Card(
     ]
 )
 
-app.layout = dbc.Container(
+tab1_content= dbc.Card(
     [
-        html.H1("IPL Analytics 🏆"),
-        html.Hr(),
         dbc.Row(
             [
                 #dbc.Col(md=2),
@@ -153,11 +151,35 @@ app.layout = dbc.Container(
             ],
             align="center",
         )
-    ],
-    fluid=True,
+    ]
 )
 
-
+tab2_content = dbc.Card(
+    dbc.CardBody(
+        [
+            html.P("This is tab 2!", className="card-text"),
+            dbc.Button("Don't click here", color="danger"),
+        ]
+    ),
+    className="mt-3",
+)
+tabs = dbc.Tabs(
+    [
+        dbc.Tab(tab1_content, label="Team Performance"),
+        dbc.Tab(tab2_content, label="Player Performance"),
+        dbc.Tab(
+            "This tab's content is never seen", label="Tab 3", disabled=True
+        ),
+    ]
+)
+app.layout = dbc.Container(
+    [
+        html.H1("IPL Analytics 🏆"),
+        html.Hr(),
+        tabs
+    ],
+    fluid=True
+)
 @app.callback(
     Output('total-matches', "children"),
     Input("team-filter", "value")
