@@ -192,6 +192,7 @@ tabs = dbc.Tabs(
 app.layout = dbc.Container(
     [
         dbc.Row(html.H1("IPL Analytics 🏆"),justify='center',style={'margin-top':'10px'}),
+        dbc.Row(html.H6("Analysing IPL Data from 2008 to 2020"),justify='center',style={'margin-top':'10px'}),
         html.Hr(),
         tabs
     ],
