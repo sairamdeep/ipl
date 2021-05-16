@@ -132,7 +132,7 @@ app.layout = dbc.Container(
                 dbc.Col(table,md=4)
             ]
         ),
-        html.H2('Yearly Stats 📈'),
+        html.H3('Yearly Stats 📈'),
         html.Hr(),
         dbc.Row(
             [
@@ -145,7 +145,6 @@ app.layout = dbc.Container(
     ],
     fluid=True,
 )
-
 
 
 @app.callback(
