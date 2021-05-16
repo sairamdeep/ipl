@@ -142,6 +142,16 @@ app.layout = dbc.Container(
             ],
             align="center",
         ),
+        html.H3('Team-Wise Stats 📈'),
+        html.Hr(),
+        dbc.Row(
+            [
+                dbc.Col(dcc.Graph(id="team-matches-twise"), md=4),
+                dbc.Col(dcc.Graph(id="team-won-twise"), md=4),
+                dbc.Col(dcc.Graph(id="team-win-percent-twise"), md=4)
+            ],
+            align="center",
+        )
     ],
     fluid=True,
 )
@@ -211,5 +221,78 @@ def team_wins_percent(team):
     fig = px.bar(a, x='year', y='win%',title=f'% Won by {team}')
     
     return fig
+@app.callback(
+    Output("team-matches-twise", "figure"),
+    Input("team-filter", "value")
+)
+def matches_team_wise(team):
+    a=get_team_wise_total(team,'match')
+    a=pd.DataFrame(a)
+    a=a.reset_index().rename(columns={'index':'team',0:'matches_played'})
+    fig = px.bar(a.sort_values(by='matches_played'), y='team',x='matches_played',title=f'Matches played by {team}')
+    fig.update_layout(
+    autosize=False,
+    width=400,
+    height=300,
+    margin=dict(
+        l=50,
+        r=50,
+        b=50,
+        t=50,
+        pad=4
+        )
+    )
+    return fig
+
+@app.callback(
+    Output("team-won-twise", "figure"),
+    Input("team-filter", "value")
+)   
+def wins_team_wise(team):
+    a=get_team_wise_total(team,'winner')
+    a=pd.DataFrame(a)
+    a=a.reset_index().rename(columns={'index':'team',0:'matches_won'})
+    fig = px.bar(a.sort_values(by='matches_won'), y='team', x='matches_won',title=f'Matches Won by {team}')
+    fig.update_layout(
+    autosize=False,
+    width=400,
+    height=300,
+    margin=dict(
+        l=50,
+        r=50,
+        b=50,
+        t=50,
+        pad=4
+        )
+    )
+    return fig
+
+@app.callback(
+    Output("team-win-percent-twise", "figure"),
+    Input("team-filter", "value")
+)  
+def win_percent_team_wise(team):
+    a=get_team_wise_total(team,'match')
+    b=get_team_wise_total(team,'win')
+    c=(b*100/a).fillna(0).apply(round)
+    a=pd.DataFrame(c)
+    a=a.reset_index().rename(columns={'index':'team',0:'win%'})
+    
+    fig = px.bar(a.sort_values(by='win%'), y='team', x='win%',title=f'% Won by {team}')
+    
+    fig.update_layout(
+    autosize=False,
+    width=400,
+    height=300,
+    margin=dict(
+        l=50,
+        r=50,
+        b=50,
+        t=50,
+        pad=4
+        )
+    )
+    return fig
+
 if __name__ == "__main__":
     app.run_server(debug=True)
