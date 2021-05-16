@@ -12,6 +12,9 @@ import plotly.express as px
 import dash_bootstrap_components as dbc
 import plotly.graph_objs as go
 
+import dash_auth
+import credentials
+
 
 #### Total Matches 
 def get_gp_match_result(filter_='Chennai Super Kings',col='batting_team',gp_col=[],metric='total_matches'):
@@ -55,7 +58,12 @@ team_wins=pd.read_csv('E:/projects/iitm/data/team_wins_NSO.csv')
 teams_list=list(team_matches.batting_team.unique())
 
 
+
 app = app = dash.Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+auth = dash_auth.BasicAuth(
+    app,
+    credentials.VALID_USERNAME_PASSWORD_PAIRS
+)
 server = app.server
 app.title = "IPL DashBoard"
 
