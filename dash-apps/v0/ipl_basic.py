@@ -109,7 +109,7 @@ table = dbc.Card(
     html.Hr(),
     dbc.Row(
         [
-            dbc.Col(html.Div("Winning %"),md=8),
+            dbc.Col(html.Div("Winning % : "),md=8),
             dbc.Col(html.Div(id='winning-percent'),md=2)
         ]
     )
@@ -125,12 +125,13 @@ app.layout = dbc.Container(
                 #dbc.Col(md=2),
                 dbc.Col(form, md=6),
                 #dbc.Col(md=2)
-            ],align="center",
+            ],justify="center",
         ),
         dbc.Row(
             [
                 dbc.Col(table,md=4)
-            ]
+            ],
+            justify="center"
         ),
         html.H3('Yearly Stats 📈'),
         html.Hr(),
